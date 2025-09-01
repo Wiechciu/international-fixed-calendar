@@ -96,7 +96,7 @@ func get_ifc_date_dict_from_gregorian_date_string(gregorian_date_string: String)
 
 ## Expects dictionary with year, month and day elements, all of type int, in gregorian calendar.
 ## Returns string in the YYYY-MM-DD format, in internatinal fixed calendar.
-func get_ifc_string_from_gregorian_date_dict(gregorian_date_dict: Dictionary, string_format: StringFormat = StringFormat.ISO) -> String:
+func get_ifc_date_string_from_gregorian_date_dict(gregorian_date_dict: Dictionary, string_format: StringFormat = StringFormat.ISO) -> String:
 	var ifc_date_dict: Dictionary = get_ifc_date_dict_from_gregorian_date_dict(gregorian_date_dict)
 	
 	var ifc_date_string: String
@@ -113,28 +113,28 @@ func get_ifc_string_from_gregorian_date_dict(gregorian_date_dict: Dictionary, st
 
 ## Expects string in the YYYY-MM-DD format, in gregorian calendar.
 ## Returns string in the YYYY-MM-DD format, in internatinal fixed calendar.
-func get_ifc_string_from_gregorian_date_string(gregorian_date_string: String, string_format: StringFormat = StringFormat.ISO) -> String:
+func get_ifc_date_string_from_gregorian_date_string(gregorian_date_string: String, string_format: StringFormat = StringFormat.ISO) -> String:
 	if not _is_valid_date_string(gregorian_date_string):
 		return "0000-00-00"
 	
 	var gregorian_date_dict: Dictionary = Time.get_datetime_dict_from_datetime_string(gregorian_date_string, false)
 	
-	return get_ifc_string_from_gregorian_date_dict(gregorian_date_dict, string_format)
+	return get_ifc_date_string_from_gregorian_date_dict(gregorian_date_dict, string_format)
 
 
 ## Expects unix time in int format.
 ## Returns string in the YYYY-MM-DD format, in internatinal fixed calendar.
-func get_ifc_string_from_unix_time(unix_time: int, string_format: StringFormat = StringFormat.ISO) -> String:
+func get_ifc_date_string_from_unix_time(unix_time: int, string_format: StringFormat = StringFormat.ISO) -> String:
 	var gregorian_date_dict: Dictionary = Time.get_datetime_dict_from_unix_time(unix_time)
 	
-	return get_ifc_string_from_gregorian_date_dict(gregorian_date_dict, string_format)
+	return get_ifc_date_string_from_gregorian_date_dict(gregorian_date_dict, string_format)
 
 
 ## Returns string in the YYYY-MM-DD format, in internatinal fixed calendar.
-func get_ifc_string_from_system(string_format: StringFormat = StringFormat.ISO) -> String:
+func get_ifc_date_string_from_system(string_format: StringFormat = StringFormat.ISO) -> String:
 	var gregorian_date_dict: Dictionary = Time.get_date_dict_from_system()
 	
-	return get_ifc_string_from_gregorian_date_dict(gregorian_date_dict, string_format)
+	return get_ifc_date_string_from_gregorian_date_dict(gregorian_date_dict, string_format)
 
 
 ## TODO
