@@ -44,7 +44,7 @@ _Credit to [this Reddit post](https://www.reddit.com/r/ISO8601/comments/i5kjsk/t
 
 ### ⚙️ Usage
 
-Plugin creates an autoload `IFC` that can be accessed anywhere in the codebase. E.g. providing date from Gregorian Calendar format:
+Plugin creates an autoload `IFC` (International Fixed Calendar) that can be accessed anywhere in the codebase. E.g. providing date from Gregorian Calendar format:
 ```
 IFC.get_ifc_date_string_from_gregorian_date_string("2025-06-10")
 ```
