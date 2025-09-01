@@ -155,9 +155,9 @@ func get_ifc_date_dict_from_ifc_date_string(ifc_date_string: String) -> Dictiona
 		ifc_date_dict.day = 0
 	else:
 		var splits: PackedStringArray = ifc_date_string.split("-")
-		ifc_date_dict.year = splits[0]
-		ifc_date_dict.month = splits[1]
-		ifc_date_dict.day = splits[2]
+		ifc_date_dict.year = int(splits[0])
+		ifc_date_dict.month = int(splits[1])
+		ifc_date_dict.day = int(splits[2])
 	return ifc_date_dict
 
 
@@ -180,6 +180,13 @@ func get_unix_time_from_ifc_date_string(ifc_date_string: String) -> int:
 ## Expects dictionary with year, month and day elements, all of type int, in gregorian calendar. 
 ## Returns dictionary with year, month and day elements, all of type int, in international fixed calendar.
 func get_gregorian_date_dict_from_ifc_date_dict(ifc_date_dict: Dictionary) -> Dictionary:
+	if not _is_valid_date_dict(ifc_date_dict):
+		var gregorian_date_dict: Dictionary = {}
+		gregorian_date_dict.year = 0
+		gregorian_date_dict.month = 0
+		gregorian_date_dict.day = 0
+		return gregorian_date_dict
+	
 	var day_number: int = _get_day_number_from_ifc_date_dict(ifc_date_dict)
 	var first_day_unix_time: int = Time.get_unix_time_from_datetime_string("%04d-%02d-%02d" % [ifc_date_dict.year, 1, 1])
 	
@@ -189,6 +196,9 @@ func get_gregorian_date_dict_from_ifc_date_dict(ifc_date_dict: Dictionary) -> Di
 ## Expects dictionary with year, month and day elements, all of type int, in international fixed calendar.
 ## Returns string in the YYYY-MM-DD format, in gregorian calendar.
 func get_gregorian_date_string_from_ifc_date_dict(ifc_date_dict: Dictionary) -> String:
+	if not _is_valid_date_dict(ifc_date_dict):
+		return "0000-00-00"
+	
 	var day_number: int = _get_day_number_from_ifc_date_dict(ifc_date_dict)
 	var first_day_unix_time: int = Time.get_unix_time_from_datetime_string("%04d-%02d-%02d" % [ifc_date_dict.year, 1, 1])
 	
@@ -267,8 +277,8 @@ func _is_valid_date_string(date_string: String) -> bool:
 
 ## Returns true if provided date dictionary is valid.
 func _is_valid_date_dict(date_dict: Dictionary) -> bool:
-	var has_valid_year: bool = date_dict.has("year") and date_dict.year is int
-	var has_valid_month: bool = date_dict.has("month") and date_dict.month is int
-	var has_valid_day: bool = date_dict.has("day") and date_dict.day is int
+	var has_valid_year: bool = date_dict.has("year") and date_dict.year is int and date_dict.year > 0
+	var has_valid_month: bool = date_dict.has("month") and date_dict.month is int and date_dict.month >= 1 and date_dict.month <= 12
+	var has_valid_day: bool = date_dict.has("day") and date_dict.day is int and date_dict.day >= 1 and date_dict.day <= 31
 	
 	return has_valid_year and has_valid_month and has_valid_day
