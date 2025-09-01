@@ -36,7 +36,7 @@ _Credit to [this Reddit post](https://www.reddit.com/r/ISO8601/comments/i5kjsk/t
 
 ### 📦 Installation
 
-1. Copy the `addons/international_fixed_calendar/` folder into your Godot project’s `addons/` directory  
+1. Copy the contents of this repository into your Godot project’s `addons/international_fixed_calendar` directory  
 2. In Godot, go to **Project > Project Settings > Plugins**  
 3. Enable **International Fixed Calendar**
 
