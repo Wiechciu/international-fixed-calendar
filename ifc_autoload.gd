@@ -51,7 +51,7 @@ enum StringFormat {
 func get_ifc_date_dict_from_gregorian_date_dict(gregorian_date_dict: Dictionary) -> Dictionary:
 	var ifc_date_dict: Dictionary = {}
 	
-	if not _is_valid_date_dict(gregorian_date_dict):
+	if not _is_valid_gregorian_date_dict(gregorian_date_dict):
 		ifc_date_dict.year = 0
 		ifc_date_dict.month = 0
 		ifc_date_dict.day = 0
@@ -81,7 +81,7 @@ func get_ifc_date_dict_from_gregorian_date_dict(gregorian_date_dict: Dictionary)
 ## Expects string in the YYYY-MM-DD format, in gregorian calendar.
 ## Returns dictionary with year, month and day elements, all of type int, in international fixed calendar.
 func get_ifc_date_dict_from_gregorian_date_string(gregorian_date_string: String) -> Dictionary:
-	if not _is_valid_date_string(gregorian_date_string):
+	if not _is_valid_gregorian_date_string(gregorian_date_string):
 		var ifc_date_dict: Dictionary = {}
 		ifc_date_dict.year = 0
 		ifc_date_dict.month = 0
@@ -113,7 +113,7 @@ func get_ifc_date_string_from_gregorian_date_dict(gregorian_date_dict: Dictionar
 ## Expects string in the YYYY-MM-DD format, in gregorian calendar.
 ## Returns string in the YYYY-MM-DD format, in international fixed calendar.
 func get_ifc_date_string_from_gregorian_date_string(gregorian_date_string: String, string_format: StringFormat = StringFormat.ISO) -> String:
-	if not _is_valid_date_string(gregorian_date_string):
+	if not _is_valid_gregorian_date_string(gregorian_date_string):
 		return "0000-00-00"
 	
 	var gregorian_date_dict: Dictionary = Time.get_datetime_dict_from_datetime_string(gregorian_date_string, false)
@@ -129,6 +129,14 @@ func get_ifc_date_string_from_unix_time(unix_time: int, string_format: StringFor
 	return get_ifc_date_string_from_gregorian_date_dict(gregorian_date_dict, string_format)
 
 
+## Expects unix time in int format.
+## Returns dictionary with year, month and day elements, all of type int, in international fixed calendar.
+func get_ifc_date_dict_from_unix_time(unix_time: int) -> Dictionary:
+	var gregorian_date_dict: Dictionary = Time.get_datetime_dict_from_unix_time(unix_time)
+	
+	return get_ifc_date_dict_from_gregorian_date_dict(gregorian_date_dict)
+
+
 ## Returns string in the YYYY-MM-DD format, in international fixed calendar.
 func get_ifc_date_string_from_system(string_format: StringFormat = StringFormat.ISO) -> String:
 	var gregorian_date_dict: Dictionary = Time.get_date_dict_from_system()
@@ -139,7 +147,7 @@ func get_ifc_date_string_from_system(string_format: StringFormat = StringFormat.
 ## Expects dictionary with year, month and day elements, all of type int, in international fixed calendar. 
 ## Returns string in the YYYY-MM-DD format, in international fixed calendar.
 func get_ifc_date_string_from_ifc_date_dict(ifc_date_dict: Dictionary, string_format: StringFormat = StringFormat.ISO) -> String:
-	if not _is_valid_date_dict(ifc_date_dict):
+	if not _is_valid_ifc_date_dict(ifc_date_dict):
 		return "0000-00-00"
 	
 	return "%04d-%02d-%02d" % [ifc_date_dict.year, ifc_date_dict.month, ifc_date_dict.day]
@@ -149,7 +157,7 @@ func get_ifc_date_string_from_ifc_date_dict(ifc_date_dict: Dictionary, string_fo
 ## Returns dictionary with year, month and day elements, all of type int, in international fixed calendar.
 func get_ifc_date_dict_from_ifc_date_string(ifc_date_string: String) -> Dictionary:
 	var ifc_date_dict: Dictionary = {}
-	if not _is_valid_date_string(ifc_date_string):
+	if not _is_valid_ifc_date_string(ifc_date_string):
 		ifc_date_dict.year = 0
 		ifc_date_dict.month = 0
 		ifc_date_dict.day = 0
@@ -177,10 +185,10 @@ func get_unix_time_from_ifc_date_string(ifc_date_string: String) -> int:
 	return Time.get_unix_time_from_datetime_dict(gregorian_date_dict)
 
 
-## Expects dictionary with year, month and day elements, all of type int, in gregorian calendar. 
-## Returns dictionary with year, month and day elements, all of type int, in international fixed calendar.
+## Expects dictionary with year, month and day elements, all of type int, in international fixed calendar. 
+## Returns dictionary with year, month and day elements, all of type int, in gregorian calendar.
 func get_gregorian_date_dict_from_ifc_date_dict(ifc_date_dict: Dictionary) -> Dictionary:
-	if not _is_valid_date_dict(ifc_date_dict):
+	if not _is_valid_ifc_date_dict(ifc_date_dict):
 		var gregorian_date_dict: Dictionary = {}
 		gregorian_date_dict.year = 0
 		gregorian_date_dict.month = 0
@@ -196,13 +204,22 @@ func get_gregorian_date_dict_from_ifc_date_dict(ifc_date_dict: Dictionary) -> Di
 ## Expects dictionary with year, month and day elements, all of type int, in international fixed calendar.
 ## Returns string in the YYYY-MM-DD format, in gregorian calendar.
 func get_gregorian_date_string_from_ifc_date_dict(ifc_date_dict: Dictionary) -> String:
-	if not _is_valid_date_dict(ifc_date_dict):
+	if not _is_valid_ifc_date_dict(ifc_date_dict):
 		return "0000-00-00"
 	
 	var day_number: int = _get_day_number_from_ifc_date_dict(ifc_date_dict)
 	var first_day_unix_time: int = Time.get_unix_time_from_datetime_string("%04d-%02d-%02d" % [ifc_date_dict.year, 1, 1])
 	
 	return Time.get_date_string_from_unix_time(first_day_unix_time + day_number * 60 * 60 * 24 - 1)
+
+
+## Expects dictionary with year, month and day elements, all of type int, in gregorian calendar.
+## Returns string in the YYYY-MM-DD format, in gregorian calendar.
+func get_gregorian_date_string_from_gregorian_date_dict(gregorian_date_dict: Dictionary) -> String:
+	if not _is_valid_gregorian_date_dict(gregorian_date_dict):
+		return "0000-00-00"
+	
+	return Time.get_datetime_string_from_datetime_dict(gregorian_date_dict, true).left(10)
 
 
 ## Expects string in the YYYY-MM-DD format, in international fixed calendar.
@@ -262,8 +279,8 @@ func _is_leap_year(year: int) -> bool:
 	return (year % 4 == 0 and year % 100 != 0) or (year % 400 == 0)
 
 
-## Returns true if provided date string is valid.
-func _is_valid_date_string(date_string: String) -> bool:
+## Returns true if provided gregorian date string is valid.
+func _is_valid_gregorian_date_string(date_string: String) -> bool:
 	var splits: PackedStringArray = date_string.split("-")
 	if splits.size() != 3:
 		return false
@@ -275,10 +292,32 @@ func _is_valid_date_string(date_string: String) -> bool:
 	return has_valid_year and has_valid_month and has_valid_day
 
 
-## Returns true if provided date dictionary is valid.
-func _is_valid_date_dict(date_dict: Dictionary) -> bool:
+## Returns true if provided IFC date string is valid.
+func _is_valid_ifc_date_string(date_string: String) -> bool:
+	var splits: PackedStringArray = date_string.split("-")
+	if splits.size() != 3:
+		return false
+	
+	var has_valid_year: bool = splits[0].is_valid_int() and int(splits[0]) > 0
+	var has_valid_month: bool = splits[1].is_valid_int() and int(splits[1]) >= 1 and int(splits[1]) <= MONTHS_IN_ONE_YEAR
+	var has_valid_day: bool = splits[2].is_valid_int() and int(splits[2]) >= 1 and int(splits[2]) <= 29
+	
+	return has_valid_year and has_valid_month and has_valid_day
+
+
+## Returns true if provided gregorian date dictionary is valid.
+func _is_valid_gregorian_date_dict(date_dict: Dictionary) -> bool:
 	var has_valid_year: bool = date_dict.has("year") and date_dict.year is int and date_dict.year > 0
 	var has_valid_month: bool = date_dict.has("month") and date_dict.month is int and date_dict.month >= 1 and date_dict.month <= 12
 	var has_valid_day: bool = date_dict.has("day") and date_dict.day is int and date_dict.day >= 1 and date_dict.day <= 31
+	
+	return has_valid_year and has_valid_month and has_valid_day
+
+
+## Returns true if provided IFC date dictionary is valid.
+func _is_valid_ifc_date_dict(date_dict: Dictionary) -> bool:
+	var has_valid_year: bool = date_dict.has("year") and date_dict.year is int and date_dict.year > 0
+	var has_valid_month: bool = date_dict.has("month") and date_dict.month is int and date_dict.month >= 1 and date_dict.month <= MONTHS_IN_ONE_YEAR
+	var has_valid_day: bool = date_dict.has("day") and date_dict.day is int and date_dict.day >= 1 and date_dict.day <= 29
 	
 	return has_valid_year and has_valid_month and has_valid_day
